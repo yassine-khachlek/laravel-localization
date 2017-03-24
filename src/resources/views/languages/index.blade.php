@@ -14,5 +14,5 @@
 @append
 
 @section('styles')
-<link href="{{ asset('/vendor/yk/laravel-localization-translation-files/flag-icon-css/css/flag-icon.min.css') }}" rel="stylesheet">
+<link href="{{ asset('/vendor/yk/laravel-localization/flag-icon-css/css/flag-icon.min.css') }}" rel="stylesheet">
 @append
