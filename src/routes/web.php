@@ -13,14 +13,19 @@
 
 Route::group(['prefix' => 'localization', 'as' => 'localization.'], function () {
 
-	Route::get('/', 'LanguagesController@index')->name('languages.index');
+	Route::get('/{language}/{file}/keys/create', 'KeysController@create')->name('keys.create');
+	Route::post('/{language}/{file}/keys', 'KeysController@store')->name('keys.store');
 
-	Route::get('/{language}', 'LanguagesController@show')->name('languages.show');
+	Route::get('/', 'LocalizationController@index')->name('index');
+
+	Route::get('/languages', 'LanguagesController@index')->name('languages.index');
+
+	Route::get('/{language}', 'FilesController@index')->name('files.index');
 
 	Route::get('/{language}/{file}', 'FilesController@show')->name('files.show');
 
 	Route::get('/{language}/{file}/edit', 'FilesController@edit')->name('files.edit');
 
-	Route::post('/{language}/{file}', 'FilesController@update')->name('files.update');
+	Route::patch('/{language}/{file}', 'FilesController@update')->name('files.update');
 
 });

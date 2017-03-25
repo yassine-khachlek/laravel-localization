@@ -1,16 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
-<ul class="nav nav-pills nav-stacked">
+<table class="table table-striped table-hover">
+	<body>
 	@foreach($languages as $language)
-		<li role="presentation" class="">
-			<a href="{{ Route::has('localization.languages.show') ? route('localization.languages.show', $language) : '#' }}">
+		<tr>
+			<td>
 				<span class="flag-icon flag-icon-{{ $language=='en' ? 'us' : $language }}"></span>
-				{{ ucfirst($language) }}
-			</a>
-		</li>
+			</td>
+			<td>
+				{{ $language }}
+			</td>
+			<td>
+				@if($language == App::getLocale())
+					<span class="label label-success">
+						Default
+					</span>
+				@endif
+			</td>
+			<td>
+				<a href="{{ Route::has('localization.files.index') ? route('localization.files.index', ['language' => $language]) : '#' }}" class="btn btn-lg btn-warning pull-right">
+					Files
+				</a>
+			</td>
+		</tr>
 	@endforeach
-</ul>
+	</body>
+</table>
 @append
 
 @section('styles')

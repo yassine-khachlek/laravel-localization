@@ -13,13 +13,16 @@ class FilesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($language)
     {
-        $languages = array_map(function($directory){
-            return basename($directory);
-        }, File::directories(resource_path('lang')));
+        $files = array_map(function($file) use ($language) {
+            return [
+                'language' => $language,
+                'file' => basename($file, '.php'),
+            ];
+        }, File::files(resource_path('lang/'.$language)));
 
-        return view('Yk\LaravelLocalization::index', compact('languages'));
+        return view('Yk\LaravelLocalization::files.index', compact('files'));
     }
 
     /**
@@ -51,9 +54,11 @@ class FilesController extends Controller
      */
     public function show($language, $file)
     {
-        $file = File::get(resource_path('lang/'.$language.'/'.$file.'.php'));
+        $translations = include resource_path('lang/'.$language.'/'.$file.'.php');
 
-        return view('Yk\LaravelLocalization::files.show', compact('file'));
+        $translations = array_dot($translations);
+
+        return view('Yk\LaravelLocalization::files.show', compact('language', 'file', 'translations'));
     }
 
     /**
