@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="form-group">
+	<a href="{{ Route::has('localization.index') ? route('localization.index') : '#' }}" class="btn btn-lg btn-block btn-primary">
+		BACK
+	</a>
+</div>
+
 <table class="table table-striped table-hover">
 	<body>
 	@foreach($languages as $language)

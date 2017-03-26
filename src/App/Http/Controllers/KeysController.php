@@ -14,9 +14,13 @@ class KeysController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($language, $file)
     {
-        //
+        $translations = include resource_path('lang/'.$language.'/'.$file.'.php');
+
+        $translations = array_dot($translations);
+
+        return view('Yk\LaravelLocalization::keys.index', compact('language', 'file', 'translations'));
     }
 
     /**
@@ -41,8 +45,13 @@ class KeysController extends Controller
      */
     public function store(Request $request, $language, $file)
     {
+        $translations = include resource_path('lang/'.$language.'/'.$file.'.php');
+
+        $translations = array_dot($translations);
+
         $validator = Validator::make($request->all(), [
-            'key' => 'required|min:1',
+            'key' => 'required|min:1|not_in:'.implode(',', array_keys($translations)),
+            'value' => 'required|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -56,48 +65,11 @@ class KeysController extends Controller
             }
         }
 
-        $languages = array_map(function($directory){
+        $translations[$request->get('key')] = $request->get('value');
 
-            return basename($directory);
+        File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($translations, true)]));
 
-        }, File::directories(resource_path('lang')));
-
-        foreach ($languages as $lang) {
-            
-            $translations = include resource_path('lang/'.$lang.'/'.$file.'.php');
-
-            $translations = array_dot($translations);
-            
-            if (! array_key_exists($request->get('key'), $translations)) {
-
-                $translations[$request->get('key')] = '';
-
-            }
-
-            $output = [];
-
-            foreach ($translations as $key => $value) {
-
-                array_set($output, $key, $value);
-
-            }
-
-            File::put(resource_path('lang/'.$lang.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($translations, true)]));
-
-        }
-
-        return redirect(route('localization.files.edit', ['language' => $language, 'file' => $file]));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return redirect(route('localization.keys.index', compact('language', 'file')));
     }
 
     /**
@@ -106,9 +78,15 @@ class KeysController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit($language, $file, $key)
     {
-        //
+        $translations = include resource_path('lang/'.$language.'/'.$file.'.php');
+
+        $translations = array_dot($translations);
+
+        $value = $translations[$key];
+
+        return view('Yk\LaravelLocalization::keys.edit', compact('language', 'file', 'key', 'value'));
     }
 
     /**
@@ -118,19 +96,39 @@ class KeysController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $language, $file, $key)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
+            'value' => 'required|min:1',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if ($validator->fails()) {
+            if($request->ajax())
+            {
+                return Response::json($validator->messages(), 400);
+            }else{
+                return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+            }
+        }
+
+        $translations = include resource_path('lang/'.$language.'/'.$file.'.php');
+
+        $translations = array_dot($translations);
+
+        $translations[$key] = $request->get('value');
+
+        $output = [];
+
+        foreach ($translations as $key => $value) {
+
+            array_set($output, $key, $value);
+
+        }
+
+        File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($translations, true)]));
+
+        return redirect(route('localization.keys.index', compact('language', 'file')));
     }
 }

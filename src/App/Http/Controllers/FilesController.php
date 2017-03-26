@@ -16,66 +16,10 @@ class FilesController extends Controller
     public function index($language)
     {
         $files = array_map(function($file) use ($language) {
-            return [
-                'language' => $language,
-                'file' => basename($file, '.php'),
-            ];
+            return basename($file, '.php');
         }, File::files(resource_path('lang/'.$language)));
 
-        return view('Yk\LaravelLocalization::files.index', compact('files'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($language, $file)
-    {
-        $translations = include resource_path('lang/'.$language.'/'.$file.'.php');
-
-        $translations = array_dot($translations);
-
-        return view('Yk\LaravelLocalization::files.show', compact('language', 'file', 'translations'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($language, $file)
-    {
-        $translations = include resource_path('lang/'.$language.'/'.$file.'.php');
-
-        $translations = array_filter(array_dot($translations), function ($translation) {
-            return gettype($translation) === 'string';
-        });
-
-        return view('Yk\LaravelLocalization::files.edit', compact('language', 'file', 'translations'));
+        return view('Yk\LaravelLocalization::files.index', compact('language', 'files'));
     }
 
     /**
@@ -87,8 +31,6 @@ class FilesController extends Controller
      */
     public function update(Request $request, $language, $file)
     {
-        //dd($request->all());
-
         $localization = [];
 
         foreach ($request->all() as $key => $value) {
@@ -102,16 +44,5 @@ class FilesController extends Controller
         File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($localization, true)]));
 
         return back();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

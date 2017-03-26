@@ -1,18 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="form-group">
+	<a href="{{ Route::has('localization.languages.index') ? route('localization.languages.index') : '#' }}" class="btn btn-lg btn-block btn-primary">
+		BACK
+	</a>
+</div>
+
 <table class="table table-striped table-hover">
 	<body>
 	@foreach($files as $file)
 		<tr>
 			<td>
-				<a href="{{ Route::has('localization.files.show') ? route('localization.files.show', ['language' => $file['language'], 'file' => $file['file']]) : '#' }}">
-					{{ ucfirst($file['file']) }}
-				</a>
+				{{ $file }}
 			</td>
 			<td>
-				<a href="{{ Route::has('localization.files.show') ? route('localization.files.edit', ['language' => $file['language'], 'file' => $file['file']]) : '#' }}" class="btn btn-lg btn-warning pull-right">
-					Edit
+				<a href="{{ Route::has('localization.keys.index') ? route('localization.keys.index', ['language' => $language, 'file' => $file]) : '#' }}" class="btn btn-lg btn-warning pull-right">
+					Keys
 				</a>
 			</td>
 		</tr>
