@@ -20,10 +20,14 @@ Route::group(['prefix' => 'localization', 'as' => 'localization.'], function () 
 	Route::post('/languages/{language}', 'LanguagesController@store')->name('languages.store');
 
 	Route::get('/{language}', 'FilesController@index')->name('files.index');
+
+	Route::get('/{language}/{file}/copy', 'FilesController@copy')->name('files.copy');
 	
 	Route::get('/{language}/create', 'FilesController@create')->name('files.create');
 
 	Route::post('/{language}', 'FilesController@store')->name('files.store');
+
+	Route::post('/{language}/{file}', 'FilesController@clone')->name('files.clone');
 
 	Route::get('/{language}/{file}', 'KeysController@index')->name('keys.index');
 

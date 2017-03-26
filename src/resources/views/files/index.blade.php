@@ -24,6 +24,10 @@
 				<a href="{{ Route::has('localization.keys.index') ? route('localization.keys.index', ['language' => $language, 'file' => $file]) : '#' }}" class="btn btn-lg btn-warning pull-right">
 					Keys
 				</a>
+
+				<a href="{{ Route::has('localization.files.copy') ? route('localization.files.copy', ['language' => $language, 'file' => $file]) : '#' }}" class="btn btn-lg btn-warning pull-right">
+					Copy
+				</a>
 			</td>
 		</tr>
 	@endforeach
