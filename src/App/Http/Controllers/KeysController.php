@@ -20,6 +20,10 @@ class KeysController extends Controller
 
         $translations = array_dot($translations);
 
+        $translations = array_filter($translations, function ($translation) {
+            return gettype($translation) === 'string';
+        });
+
         return view('Yk\LaravelLocalization::keys.index', compact('language', 'file', 'translations'));
     }
 
@@ -67,7 +71,13 @@ class KeysController extends Controller
 
         $translations[$request->get('key')] = $request->get('value');
 
-        File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($translations, true)]));
+        $array = array();
+
+        foreach ($translations as $key => $value) {
+            array_set($array, $key, $value);
+        }
+
+        File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($array, true)]));
 
         return redirect(route('localization.keys.index', compact('language', 'file')));
     }
@@ -119,15 +129,15 @@ class KeysController extends Controller
 
         $translations[$key] = $request->get('value');
 
-        $output = [];
+        $array = [];
 
         foreach ($translations as $key => $value) {
 
-            array_set($output, $key, $value);
+            array_set($array, $key, $value);
 
         }
 
-        File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($translations, true)]));
+        File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($array, true)]));
 
         return redirect(route('localization.keys.index', compact('language', 'file')));
     }
