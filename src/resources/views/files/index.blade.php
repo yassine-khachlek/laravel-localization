@@ -7,6 +7,12 @@
 	</a>
 </div>
 
+<div class="form-group">
+	<a href="{{ Route::has('localization.files.create') ? route('localization.files.create', compact('language')) : '#' }}" class="btn btn-lg btn-warning btn-block">
+		ADD
+	</a>
+</div>
+
 <table class="table table-striped table-hover">
 	<body>
 	@foreach($files as $file)

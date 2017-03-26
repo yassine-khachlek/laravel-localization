@@ -4,6 +4,7 @@ namespace Yk\LaravelLocalization\App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Validator;
 use File;
 
 class FilesController extends Controller
@@ -22,27 +23,57 @@ class FilesController extends Controller
         return view('Yk\LaravelLocalization::files.index', compact('language', 'files'));
     }
 
+
     /**
-     * Update the specified resource in storage.
+     * Show the form for creating a new resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $language, $file)
+    public function create($language)
     {
-        $localization = [];
+        $languages = array_map(function($directory){
+            return basename($directory);
+        }, File::directories(resource_path('lang')));
 
-        foreach ($request->all() as $key => $value) {
-            if (!starts_with($key, 'KEY_')) {
-                continue;
+        return view('Yk\LaravelLocalization::files.create', compact('language', 'languages'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request, $language)
+    {
+        $files = array_map(function($file){
+            return basename($file, '.php');
+        }, File::files(resource_path('lang/'.$language)));
+
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|min:1|not_in:'.implode(',', $files),
+        ]);
+
+        if ($validator->fails()) {
+            if($request->ajax())
+            {
+                return Response::json($validator->messages(), 400);
+            }else{
+                return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
             }
-            
-            array_set($localization, $request->get($key), $request->get(str_replace('KEY_', 'VALUE_', $key)));
         }
 
-        File::put(resource_path('lang/'.$language.'/'.$file.'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($localization, true)]));
+        $languages = array_map(function($directory){
+            return basename($directory);
+        }, File::directories(resource_path('lang')));
 
-        return back();
+        foreach ($languages as $language) {
+            $array = array();
+            File::put(resource_path('lang/'.$language.'/'.$request->get('file').'.php'), view('Yk\LaravelLocalization::scaffolds.language', ['array' => var_export($array, true)]));
+        }
+
+        return redirect(route('localization.files.index', compact('language')));
     }
 }

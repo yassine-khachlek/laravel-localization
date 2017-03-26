@@ -19,6 +19,12 @@ Route::group(['prefix' => 'localization', 'as' => 'localization.'], function () 
 
 	Route::post('/languages/{language}', 'LanguagesController@store')->name('languages.store');
 
+	Route::get('/{language}', 'FilesController@index')->name('files.index');
+	
+	Route::get('/{language}/create', 'FilesController@create')->name('files.create');
+
+	Route::post('/{language}', 'FilesController@store')->name('files.store');
+
 	Route::get('/{language}/{file}', 'KeysController@index')->name('keys.index');
 
 	Route::get('/{language}/{file}/create', 'KeysController@create')->name('keys.create');
@@ -31,8 +37,5 @@ Route::group(['prefix' => 'localization', 'as' => 'localization.'], function () 
 
 	Route::get('/', 'LocalizationController@index')->name('index');
 
-
-
-	Route::get('/{language}', 'FilesController@index')->name('files.index');
 
 });

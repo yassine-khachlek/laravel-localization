@@ -46,7 +46,7 @@ class LanguagesController extends Controller
         }, File::directories(resource_path('lang')));
 
         $validator = Validator::make($request->all(), [
-            'language_iso_code' => 'required|min:2|max:5|not_in:'.implode(',', array_keys($languages)),
+            'language_iso_code' => 'required|min:2|max:5|not_in:'.implode(',', $languages),
         ]);
 
         if ($validator->fails()) {
