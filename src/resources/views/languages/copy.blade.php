@@ -32,7 +32,3 @@
 	</div>
 </form>
 @append
-
-@section('styles')
-<link href="{{ asset('/vendor/yk/laravel-localization/flag-icon-css/css/flag-icon.min.css') }}" rel="stylesheet">
-@append

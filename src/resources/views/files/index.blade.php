@@ -34,11 +34,3 @@
 	</body>
 </table>
 @append
-
-@section('styles')
-
-@append
-
-@section('scripts')
-
-@append
