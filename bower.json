@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "flag-icon-css": "^2.8.0"
+    "flag-icon-css": "^2.8.0",
+    "font-awesome": "^4.7.0"
   }
 }
