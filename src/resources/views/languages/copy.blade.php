@@ -1,13 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="form-group">
-	<a href="{{ Route::has('localization.languages.index') ? route('localization.languages.index') : '#' }}" class="btn btn-lg btn-block btn-primary">
-		BACK
-	</a>
-</div>
-
-<form id="whois-lookup-form" action="{{ Route::has('localization.languages.store') ? route('localization.languages.store', ['language' => $language]) : '#' }}" method="POST">
+<form action="{{ Route::has('localization.languages.store') ? route('localization.languages.store', ['language' => $language]) : '#' }}" method="POST">
 	{{ method_field('POST') }}
 	{{ csrf_field() }}
 
@@ -25,10 +19,21 @@
         @endif
 	</div>
 
-	<div class="form-group">
-		<button type="submit" class="btn btn-danger btn-block btn-lg">
-			SAVE
-		</button>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<a href="{{ Route::has('localization.languages.index') ? route('localization.languages.index') : '#' }}" class="btn btn-lg btn-block btn-default">
+					CANCEL
+				</a>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group">
+				<button type="submit" class="btn btn-danger btn-block btn-lg">
+					SAVE
+				</button>
+			</div>
+		</div>
 	</div>
 </form>
 @append
